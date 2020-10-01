@@ -1,0 +1,92 @@
+﻿@model IEnumerable<StockItems>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h4>
+    Stock Items
+</h4>
+<br />
+<p>
+    <a href="home/NewEntry">Create New</a>
+</p>
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>View</th>
+        <th>ItemName</th>
+        <th>Description</th>
+        <th>Quantity</th>
+        <th>&nbsp;</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td><a href="home/Item/@item.Id">View</a></td>
+            <td>@item.ItemName</td>
+            <td>@item.Description</td>
+            <td>@item.Quantity</td>
+            <td><a href="home/ManufacturePortal/@item.Id">Manufacture</a></td>
+            <td><a href="javaScript:void(0)" onclick="ShowForm(@item.Id)">Edit</a></td>
+
+        </tr>
+    }
+</table>
+
+<form id="EditForm" style="display:none;">
+    <div class="row">
+        <div class="col-md-4">
+            <label>ItemName</label>
+            <input autocomplete="off" class="form-control" data-val="true" id="ItemName" type="text" value="">
+        </div>
+        <div class="col-md-4">
+            <label>Description</label>
+            <input autocomplete="off" class="form-control" id="Description" type="text" value="">
+        </div>
+        <div class="col-md-4">
+            <label>Quantity</label>
+            <input autocomplete="off" class="form-control" id="Quantity" type="number" value="" required>
+        </div>
+        <div class="col-md-4">
+            <label>&nbsp;</label>
+            <button class="btn btn-block bg-primary" type="button" id="Save">Save</button>
+        </div>
+        <input id="itemId" hidden />
+    </div>
+</form>
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script>
+
+        function ShowForm(id) {
+            $('#EditForm').fadeIn(500);
+            $('#itemId').val(id);
+        };
+
+        $('#Save').click(function (e) {
+            e.preventDefault();
+            var $form = $('#EditForm');
+
+                var id = $('#itemId').val();
+                var ItemName = $('#ItemName').val();
+                var Description = $('#Description').val();
+                var Quantity = $('#Quantity').val();
+
+                $.ajax({
+                    type: "PUT",
+                    cache: false,
+                    url: "/home/EditStockItem?id=" + id,
+                    data: { ItemName, Description, Quantity },
+                    success: function (data) {
+                        location.reload();
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log("MeetingForm Post Failed || XMLHttpRequest=" + XMLHttpRequest + ", textStatus=" + textStatus + ", errorThrown=" + errorThrown);
+                        alert("error");
+                    }
+                });
+        });
+    </script>
+}

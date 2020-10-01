@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Inventory_App.Models.Materials>
+
+@{
+    ViewData["Title"] = "Item";
+}
+
+<h4>Materials</h4>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    <a href="javaScript:void(0)" onclick="ShowForm(@item.Id)">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form id="EditForm" style="display:none;">
+    <div class="row">
+        <div class="col-md-4">
+            <label>Description</label>
+            <input autocomplete="off" class="form-control" id="Description" type="text" value="">
+        </div>
+        <div class="col-md-4">
+            <label>Quantity</label>
+            <input autocomplete="off" class="form-control" data-val="true" id="Quantity" type="number" value="">
+        </div>
+        <div class="col-md-4">
+            <label>&nbsp;</label>
+            <button class="btn btn-block bg-primary" type="button" id="Save">Save</button>
+        </div>
+        <input id="itemId" hidden />
+    </div>
+    
+</form>
+@section Scripts {
+    <script>
+
+        function ShowForm(id) {
+            $('#EditForm').fadeIn(500);
+            $('#itemId').val(id);
+        };
+
+
+        $('#Save').click(function (e) {
+            e.preventDefault();
+
+            var id = $('#itemId').val();
+            var Description = $('#Description').val();
+            var Quantity = $('#Quantity').val();
+
+            var $form = $('#EditForm');
+            //console.log($form);
+            $.ajax({
+                type: "PUT",
+                cache: false,
+                url: "/home/EditItem?id=" + id,
+                data: { Description, Quantity },
+                success: function (data) {
+                    location.reload();
+                    //alert("done");
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("MeetingForm Post Failed || XMLHttpRequest=" + XMLHttpRequest + ", textStatus=" + textStatus + ", errorThrown=" + errorThrown);
+                    alert("error");
+                }
+            });
+        });
+    </script>
+}

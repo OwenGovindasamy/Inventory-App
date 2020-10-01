@@ -1,0 +1,103 @@
+﻿@model Inventory_App.ViewModel.NewEntryVM
+
+@{
+    ViewData["Title"] = "NewEntry";
+}
+<form id="NewEntryForm">
+    <h4>Add a Stock Item</h4>
+    <hr />
+    <div class="row">
+
+        <div class="col-md-4">
+            <label>Item Name</label>
+            @Html.TextBoxFor(model => model.StockItems.ItemName, new { @class = "form-control", @autocomplete = "off" })
+        </div>
+        <div class="col-md-4">
+            <label>Description</label>
+            @Html.TextBoxFor(model => model.StockItems.Description, new { @class = "form-control", @autocomplete = "off" })
+        </div>
+        <div class="col-md-4">
+            <label>Quantity</label>
+            @Html.TextBoxFor(model => model.StockItems.Quantity, new { @class = "form-control", @autocomplete = "off" })
+        </div>
+    </div>
+    @Html.HiddenFor(x => x.StockItems.Id)
+    <br />
+    <h4>Add Materials</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <label>Description</label>
+            @Html.TextBoxFor(model => model.Materials.Description, new { @class = "form-control", @autocomplete = "off" })
+        </div>
+        <div class="col-md-4">
+            <label>Quantity</label>
+            @Html.TextBoxFor(model => model.Materials.Quantity, new { @class = "form-control", @autocomplete = "off" })
+        </div>
+        <div class="col-md-4">
+            <label>&nbsp;</label>
+           <button class="btn btn-block bg-primary" id="add">add</button>
+        </div>
+        @Html.HiddenFor(x => x.Materials.Id)
+        <br />
+        <ul id="new" class="list-group"></ul>
+    </div>
+</form>
+<br />
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        jQuery(document).ready(function ($)
+        {
+            const SaveMaterial = ($form) => {
+                var id = $("#StockItems_Id").val();
+
+                id == "" ? id = 0 : $("#StockItems_Id").val();
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/home/NewEntryPost?id=" + id,
+                    data: $form.serialize(),
+                    success: function (data) {
+                        //console.log(data);
+                        $("#StockItems_Id").val(data.stockId);
+                        $("#Materials_Id").val(data.materialId);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log("Post Failed || XMLHttpRequest=" + XMLHttpRequest + ", textStatus=" + textStatus + ", errorThrown=" + errorThrown)
+                    }
+                });
+            }
+
+            var counter = 0;
+
+            var vm = { Materials: [] };
+
+            $('#add').click(function (e) {
+                e.preventDefault();
+
+                var Description = $("#Materials_Description").val();
+
+                var Quantity = $("#Materials_Quantity").val();
+
+                $("#new").append("<li id = " + counter + " class='list-group-item'> <bold>Description:</bold> " + Description + ", <bold>Quantity : </bold>" + Quantity + " </li>");
+
+                counter++;
+
+                vm.Materials.push(Description, Quantity);
+                //console.log("vm.Materials:" + vm.Materials);
+
+                var $form = $('#NewEntryForm');
+                SaveMaterial($form);
+
+                $("#Materials_Description").val("");
+                $("#Materials_Quantity").val("");
+            });
+        });
+    </script>
+}

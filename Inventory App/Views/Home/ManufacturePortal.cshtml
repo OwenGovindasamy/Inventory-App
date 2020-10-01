@@ -1,0 +1,51 @@
+﻿@model Inventory_App.ViewModel.ManufactureVM
+
+@{
+    ViewData["Title"] = "ManufacturePortal";
+}
+
+<h4>
+    Manufacture Portal
+</h4>
+<br />
+
+<div class="row">
+    <div class="col-md-4">
+        <label>Item to Manufacture</label>
+        @Html.DropDownListFor(m => m.Item, new SelectList(ViewBag.StockItems, "Id", "ItemName"), "--Select an Option--", new { @class = "form-control", required = "required" })
+    </div>
+    <div class="col-md-4">
+        <label>Quantity</label>
+        @Html.TextBoxFor(m => m.Qty, new { @class = "form-control", @autocomplete = "off" })
+    </div>
+    <div class="col-md-4">
+        <label>&nbsp;</label>
+           <button class="btn btn-block bg-primary" onclick="StartManufacturing()">Finish</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const StartManufacturing = () =>
+        {
+            var url = window.location.pathname;
+            var id = url.substring(url.lastIndexOf('/') + 1);
+            var Qty = $("#Qty").val();
+            var Item = $("#Item").val();
+
+            //alert(Qty)
+            $.ajax({
+                type: "Post",
+                cache: false,
+                url: "/home/Manufacture?id=" + id,
+                data: { Qty, Item },
+                success: function (data) {
+                    alert(data);
+                },
+                error: function (data) {
+                    alert(data);
+                }
+            });
+        };
+    </script>
+}
