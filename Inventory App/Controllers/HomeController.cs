@@ -71,6 +71,7 @@ namespace Inventory_App.Controllers
 
             return Json(new { materialId = vm.Id });
         }
+
         [HttpPut]
         public IActionResult EditItem(int id, MaterialVM vm)
         {
