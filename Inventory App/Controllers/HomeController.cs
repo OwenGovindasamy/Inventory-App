@@ -82,9 +82,9 @@ namespace Inventory_App.Controllers
             return Json(new { materialId = vm.Id });
         }
 
-        public IActionResult ManufacturePortal()
+        public IActionResult ManufacturePortal(int id)
         {
-            ViewBag.StockItems = _businessLogic.GetStockItems();
+            ViewBag.StockItems = _businessLogic.GetStockItem(id);
             ManufactureVM manufactureVM = new ManufactureVM();
 
             return View(manufactureVM);

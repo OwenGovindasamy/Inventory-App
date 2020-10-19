@@ -24,6 +24,10 @@ namespace Inventory_App.Logic
         {
             return _context.StockItems.ToList();
         }
+        public List<StockItems> GetStockItem(int id)
+        {
+            return _context.StockItems.Where(c => c.Id == id).ToList();
+        }
 
         public List<Materials> GetMaterial(int id)
         {

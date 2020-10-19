@@ -7,7 +7,7 @@ namespace Inventory_App.Logic
     public interface IBusinessLogic
     {
         List<StockItems> GetStockItems();
-
+        List<StockItems> GetStockItem(int id);
         List<Materials> GetMaterial(int id);
         NewEntryVM CreateNewEntry(NewEntryVM vm);
         NewEntryVM UpdateEntry(int id, NewEntryVM vm);
